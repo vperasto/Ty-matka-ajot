@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapComponent } from './components/MapComponent';
 import { Button } from './components/Button';
 import { Modal } from './components/Modal';
@@ -16,6 +16,7 @@ const App: React.FC = () => {
   const [waypoints, setWaypoints] = useState<Waypoint[]>([]);
   const [routeData, setRouteData] = useState<RouteSummary | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchResults, setSearchResults] = useState<SearchResultItem[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [loadingRoute, setLoadingRoute] = useState(false);
@@ -30,7 +31,7 @@ const App: React.FC = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isChangelogOpen, setIsChangelogOpen] = useState(false);
 
-  // Preset State - Lazy load from localStorage to ensure data is available immediately
+  // Preset State - Lazy load from localStorage
   const [presets, setPresets] = useState<Preset[]>(() => {
     try {
       const saved = localStorage.getItem('lapua-logistics-presets');
@@ -133,12 +134,11 @@ const App: React.FC = () => {
   // HTML5 Drag and Drop Handlers
   const onDragStart = (e: React.DragEvent<HTMLLIElement>, index: number) => {
     setDraggedItemIndex(index);
-    // Effect for the drag image
     e.dataTransfer.effectAllowed = "move";
   };
 
   const onDragOver = (e: React.DragEvent<HTMLLIElement>, index: number) => {
-    e.preventDefault(); // Necessary to allow dropping
+    e.preventDefault(); 
     if (draggedItemIndex === null || draggedItemIndex === index) return;
   };
 
@@ -160,12 +160,12 @@ const App: React.FC = () => {
 
   // Handler for dragging markers on the map
   const handleWaypointDrag = async (id: string, newCoords: Coordinates) => {
-    // 1. Optimistic update of coordinates (fast)
+    // 1. Optimistic update
     setWaypoints(prev => prev.map(wp => 
         wp.id === id ? { ...wp, coords: newCoords } : wp
     ));
 
-    // 2. Fetch the new address for this location (async)
+    // 2. Fetch the new address
     try {
         const newName = await reverseGeocode(newCoords);
         setWaypoints(prev => prev.map(wp => 
@@ -353,7 +353,6 @@ const App: React.FC = () => {
                       <p className="font-serif text-sm truncate font-medium select-none">{wp.name}</p>
                     </div>
                     
-                    {/* Keep arrows for accessibility/precision, but could hide them if desired */}
                     <div className="flex flex-col mr-1">
                         <button 
                             onClick={() => handleMoveWaypoint(index, 'up')}
@@ -417,7 +416,7 @@ const App: React.FC = () => {
            <div className="text-[10px] font-mono opacity-80 uppercase leading-none mt-1">Lapua • Suomi</div>
         </div>
 
-        {/* Footer info: Moved to Left bottom to clear space for Zoom controls on Right bottom */}
+        {/* Footer info */}
         <div className="absolute bottom-1 left-1 md:bottom-4 md:left-4 z-[400] flex flex-col md:flex-row md:items-end gap-2 px-2 py-1 bg-white/80 md:bg-transparent">
            <div className="bg-white border-2 border-black px-2 py-1">
               <span className="font-serif text-[10px] text-gray-600 font-bold">

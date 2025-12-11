@@ -1,8 +1,5 @@
 import { Coordinates, RouteSummary } from "../types";
 
-// Helper to wait to avoid rate limiting
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
 interface NominatimResult {
     display_name: string;
     lat: string;
@@ -20,14 +17,13 @@ interface NominatimResult {
     };
 }
 
-// Helper to format address consistently as "Street Number, City"
+// Helper to format address consistently
 const formatAddressName = (item: NominatimResult): string => {
     if (item.address) {
         const road = item.address.road || item.address.pedestrian || item.address.highway || item.address.street || "";
         const number = item.address.house_number || "";
         const city = item.address.city || item.address.town || item.address.village || item.address.municipality || "";
         
-        // If we have a road, construct the address manually to ensure number is included
         if (road) {
             let name = road;
             if (number) name += ` ${number}`;
@@ -35,14 +31,11 @@ const formatAddressName = (item: NominatimResult): string => {
             return name.trim();
         }
     }
-    
-    // Fallback: use the first part of the display name if structured data is partial or missing
     return item.display_name.split(',')[0]; 
 };
 
 export const searchAddress = async (query: string): Promise<{ name: string; coords: Coordinates }[]> => {
   try {
-    // Adding addressdetails=1 is critical to get the house_number separately
     const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=fi&limit=5&addressdetails=1`;
     const response = await fetch(url);
     if (!response.ok) throw new Error("Geocoding failed");
@@ -73,42 +66,59 @@ export const reverseGeocode = async (coords: Coordinates): Promise<string> => {
   }
 };
 
+// --- ROUTING ENGINE (ORS ONLY) ---
+
 export const fetchRoute = async (waypoints: Coordinates[]): Promise<RouteSummary | null> => {
   if (waypoints.length < 2) return null;
 
-  const coordsString = waypoints.map(wp => `${wp.lng},${wp.lat}`).join(';');
-  
-  // Using the reliable German OSM server.
-  // CRITICAL FIX: continue_straight=false allowed the routing engine to make a U-turn at a waypoint.
-  // This is essential for A -> B -> A type routes so it doesn't loop around a block.
-  const url = `https://routing.openstreetmap.de/routed-car/route/v1/driving/${coordsString}?overview=full&geometries=geojson&continue_straight=false`;
+  const coords = waypoints.map(wp => [wp.lng, wp.lat]);
+
+  const url = "https://api.openrouteservice.org/v2/directions/driving-car/geojson";
 
   try {
-    const response = await fetch(url, { method: 'GET', mode: 'cors' });
-    
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImY0ODJmOGM4NDMwZTQyMjViODI0MTc4ZjdhMzY5YTMyIiwiaCI6Im11cm11cjY0In0="
+      },
+      body: JSON.stringify({
+        coordinates: coords,
+        instructions: false
+      })
+    });
+
     if (!response.ok) {
-      console.warn(`Routing provider failed: ${url} with status ${response.status}`);
+      console.warn("ORS failed with status:", response.status);
       return null;
     }
-    
+
     const data = await response.json();
-    if (data.code !== "Ok" || !data.routes || data.routes.length === 0) {
-        console.warn(`Routing provider returned no routes: ${url}`);
-        return null;
+
+    if (!data.features || data.features.length === 0) {
+      console.warn("ORS returned no routes");
+      return null;
     }
 
-    const route = data.routes[0];
-    
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const geometry = route.geometry.coordinates.map((coord: any[]) => [coord[1], coord[0]] as [number, number]);
+    const feature = data.features[0];
 
-    return {
-      distance: route.distance, // meters
-      duration: route.duration, // seconds
-      geometry: geometry
+    const distance = feature.properties.summary.distance;
+    const duration = feature.properties.summary.duration;
+
+    const geometry = feature.geometry.coordinates.map(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (coord: number[]) => [coord[1], coord[0]] as [number, number]
+    );
+
+    const route: RouteSummary = {
+      distance,
+      duration,
+      geometry
     };
-  } catch (error) {
-    console.warn(`Routing network error for ${url}:`, error);
+
+    return route;
+  } catch (err) {
+    console.warn("ORS network error:", err);
     return null;
   }
 };

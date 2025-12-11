@@ -1,8 +1,14 @@
 import { Coordinates } from "./types";
 
+// --- API KEYS ---
+// HAE ILMAINEN AVAIN TÄÄLTÄ: https://openrouteservice.org/dev/#/signup
+// Liitä avain lainausmerkkien väliin (esim. "5b3ce359...")
+// Jos tämä on tyhjä, sovellus käyttää epävakaata julkista OSRM-palvelinta.
+export const OPENROUTESERVICE_API_KEY: string = "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6ImY0ODJmOGM4NDMwZTQyMjViODI0MTc4ZjdhMzY5YTMyIiwiaCI6Im11cm11cjY0In0="; 
+
 export const LAPUA_COORDS: Coordinates = {
   lat: 62.9693,
-  lng: 23.0068, // Corrected from 13.0068 (Sweden) to 23.0068 (Finland)
+  lng: 23.0068, 
 };
 
 export const SEINAJOKI_COORDS: Coordinates = {
@@ -10,7 +16,7 @@ export const SEINAJOKI_COORDS: Coordinates = {
   lng: 22.8549,
 };
 
-export const DEFAULT_ZOOM = 13; // Zoomed in a bit closer to Lapua by default
+export const DEFAULT_ZOOM = 13; 
 export const MAX_ZOOM = 18;
 
 // Stylized Map Tile Layer (OSM standard, filters applied in CSS)
