@@ -1,0 +1,5 @@
+{
+  "name": "Työmatka-ajot, Lapua",
+  "description": "An e-paper styled mileage tracker and route planner centered on Lapua, Finland. Features waypoint management, automatic distance calculation, and clipboard export.",
+  "requestFramePermissions": []
+}

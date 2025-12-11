@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Työmatka-ajot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+    <!-- Fonts: Merriweather (Serif) for headers, JetBrains Mono for data -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300&display=swap" rel="stylesheet">
+    <style>
+      /* E-Paper Global Styles */
+      body {
+        background-color: #f4f4f4; /* Light gray paper tone */
+        color: #111111; /* Ink black */
+      }
+      .font-serif {
+        font-family: 'Merriweather', serif;
+      }
+      .font-mono {
+        font-family: 'JetBrains Mono', monospace;
+      }
+      /* Custom Map Filter for E-Ink look */
+      .grayscale-map .leaflet-tile-pane {
+        filter: grayscale(100%) contrast(110%) brightness(105%);
+      }
+      /* Sharp borders for everything */
+      * {
+        border-radius: 0 !important; /* Force square everywhere */
+      }
+
+      /* --- LEAFLET CUSTOMIZATION FOR BRUTALIST THEME --- */
+      
+      /* Zoom Controls */
+      .leaflet-bar {
+        border: none !important;
+        box-shadow: none !important;
+      }
+      .leaflet-bar a {
+        background-color: #fff !important;
+        border: 2px solid black !important;
+        color: black !important;
+        width: 36px !important;
+        height: 36px !important;
+        line-height: 32px !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        font-weight: bold !important;
+        font-size: 18px !important;
+        margin-bottom: 6px !important;
+        box-shadow: 4px 4px 0px 0px rgba(0,0,0,1) !important;
+        transition: all 0.1s ease;
+      }
+      .leaflet-bar a:hover {
+        background-color: #f0f0f0 !important;
+        transform: translate(1px, 1px);
+        box-shadow: 3px 3px 0px 0px rgba(0,0,0,1) !important;
+      }
+      .leaflet-bar a:active {
+        transform: translate(3px, 3px);
+        box-shadow: 1px 1px 0px 0px rgba(0,0,0,1) !important;
+      }
+      /* Remove default rounded corners from first/last child */
+      .leaflet-touch .leaflet-bar a:first-child,
+      .leaflet-touch .leaflet-bar a:last-child {
+        border-radius: 0 !important;
+      }
+
+      /* Popups */
+      .leaflet-popup-content-wrapper, .leaflet-popup-tip {
+        background: white !important;
+        border: 2px solid black !important;
+        box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.5) !important;
+        border-radius: 0 !important;
+        color: black !important;
+        font-family: 'Merriweather', serif !important;
+      }
+      .leaflet-popup-close-button {
+        color: black !important;
+        font-weight: bold;
+      }
+
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "leaflet/": "https://aistudiocdn.com/leaflet@^1.9.4/",
+    "leaflet": "https://aistudiocdn.com/leaflet@^1.9.4",
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "react": "https://aistudiocdn.com/react@^19.2.1",
+    "react-leaflet": "https://aistudiocdn.com/react-leaflet@^5.0.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
