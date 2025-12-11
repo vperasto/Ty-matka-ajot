@@ -385,11 +385,7 @@ const App: React.FC = () => {
           <div className="flex justify-between items-end mb-4 font-mono">
             <div>
               <div className="text-xs uppercase text-gray-500 mb-1">
-                 {routeData?.isFallback ? (
-                     <span className="text-orange-600 font-bold">MATKA (LINTUTIETÄ)</span>
-                 ) : (
-                     "Matka (Auto)"
-                 )}
+                 MATKA (AUTO)
               </div>
               <div className="text-2xl font-bold">
                 {routeData ? `${Math.round(routeData.distance / 1000)} km` : '0 km'}
@@ -407,15 +403,10 @@ const App: React.FC = () => {
             onClick={copyToClipboard} 
             disabled={!routeData || loadingRoute} 
             className="w-full"
-            variant={routeData?.isFallback ? "secondary" : "primary"}
+            variant="primary"
           >
-            {loadingRoute ? "LASKETAAN..." : routeData?.isFallback ? "[KOPIOI (VAROITUS: LINTUTIE)]" : "[KOPIOI REITTI]"}
+            {loadingRoute ? "LASKETAAN..." : "[KOPIOI REITTI]"}
           </Button>
-          {routeData?.isFallback && (
-              <p className="text-[10px] text-orange-600 mt-2 text-center font-mono">
-                  HUOM: Reitityspalvelimeen ei saatu yhteyttä. Reitti on laskettu suorina viivoina.
-              </p>
-          )}
         </div>
       </aside>
 

@@ -6,6 +6,16 @@ export interface ChangelogEntry {
 
 export const changelogData: ChangelogEntry[] = [
     {
+        version: "1.6.0",
+        date: "2025-12-11",
+        changes: [
+            "MERKITTÄVÄ PÄIVITYS: Palattu takaisin yksinkertaisempaan reitityslogiikkaan (vastaa versiota 1.3.1), poistaen virhealttiit varajärjestelmät.",
+            "KORJAUS: Korjattu A -> B -> A reititys sallimalla U-käännökset välietapeissa. Reitti ei enää kierrä korttelin ympäri turhaan.",
+            "ULKOASU: Tarkennettu käyttöliittymään, että reitti on laskettu nimenomaan autolle.",
+            "SIIVOUS: Poistettu 'Linnuntie'-varatila."
+        ]
+    },
+    {
         version: "1.5.0",
         date: "2025-05-25",
         changes: [

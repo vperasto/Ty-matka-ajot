@@ -14,7 +14,6 @@ export interface RouteSummary {
   distance: number; // in meters
   duration: number; // in seconds
   geometry: [number, number][]; // Array of [lat, lng]
-  isFallback?: boolean; // Indicates if this is a straight-line fallback
 }
 
 export interface Preset {

@@ -119,10 +119,9 @@ export const MapComponent: React.FC<MapComponentProps> = ({ waypoints, route, on
           <Polyline 
             positions={route.geometry} 
             pathOptions={{ 
-                color: route.isFallback ? 'red' : 'black', 
+                color: 'black', 
                 weight: 4, 
-                dashArray: route.isFallback ? '5, 10' : '10, 10',
-                opacity: route.isFallback ? 0.6 : 1
+                opacity: 0.8
             }} 
           />
         )}
