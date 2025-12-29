@@ -25,6 +25,18 @@ interface MapComponentProps {
   onWaypointMove?: (id: string, newCoords: Coordinates) => void;
 }
 
+// Component to force map resize on mount (Fixes the Netlify/CSS layout glitch)
+const MapResizer: React.FC = () => {
+  const map = useMap();
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      map.invalidateSize();
+    }, 200); // 200ms delay ensures the DOM layout is settled
+    return () => clearTimeout(timer);
+  }, [map]);
+  return null;
+};
+
 // Component to handle map clicks
 const MapClickHandler: React.FC<{ onAddWaypoint: (wp: Waypoint) => void }> = ({ onAddWaypoint }) => {
   const [isAdding, setIsAdding] = useState(false);
@@ -80,6 +92,9 @@ export const MapComponent: React.FC<MapComponentProps> = ({ waypoints, route, on
         style={{ height: '100%', width: '100%' }}
         zoomControl={false}
       >
+        {/* Fix for sizing issues */}
+        <MapResizer />
+
         <TileLayer
           attribution={TILE_LAYER_ATTRIB}
           url={TILE_LAYER_URL}
