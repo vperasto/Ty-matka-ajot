@@ -25,15 +25,30 @@ interface MapComponentProps {
   onWaypointMove?: (id: string, newCoords: Coordinates) => void;
 }
 
-// Component to force map resize on mount (Fixes the Netlify/CSS layout glitch)
+// Component to force map resize on mount using ResizeObserver
+// This handles the delay caused by Tailwind CDN loading styles after JS init
 const MapResizer: React.FC = () => {
   const map = useMap();
+
   useEffect(() => {
-    const timer = setTimeout(() => {
+    // Immediate check
+    map.invalidateSize();
+
+    // Observe the map container for any size changes (e.g. when Tailwind loads)
+    const resizeObserver = new ResizeObserver(() => {
       map.invalidateSize();
-    }, 200); // 200ms delay ensures the DOM layout is settled
-    return () => clearTimeout(timer);
+    });
+
+    const container = map.getContainer();
+    if (container) {
+      resizeObserver.observe(container);
+    }
+
+    return () => {
+      resizeObserver.disconnect();
+    };
   }, [map]);
+
   return null;
 };
 
@@ -92,7 +107,7 @@ export const MapComponent: React.FC<MapComponentProps> = ({ waypoints, route, on
         style={{ height: '100%', width: '100%' }}
         zoomControl={false}
       >
-        {/* Fix for sizing issues */}
+        {/* Fix for sizing issues with ResizeObserver */}
         <MapResizer />
 
         <TileLayer
